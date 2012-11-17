@@ -2,9 +2,9 @@ class CobolData::SchemaParser
   class << self
     TYPES = { 'X' => :text, '9' => :number }
 
-    def parse(s)
+    def parse_line(s)
       # Check for standard format
-      if line_match = %r|(?<name>[\w\-]+)\s+PIC\s+(?<format>\S*)\s*(?<modifiers>.*)\.|.match(s)
+      if line_match = %r|(?<name>[\w\-]+)\s+PIC\s+(?<format>\S*)\s*(?<modifiers>.*)|.match(s)
         # Expand length in parentheses
         format_expanded = line_match[:format].gsub(/([X9])\((\d+)\)/) { $1 * $2.to_i }
 
@@ -38,11 +38,16 @@ class CobolData::SchemaParser
 
       # Check for redefines
       # TODO: DRY name part of regex (see above)
-      elsif line_match = %r|(?<name>[\w\-]+)\s+REDEFINES\s+(?<original>[\w\-]+).*\.|.match(s)
+      elsif line_match = %r|(?<name>[\w\-]+)\s+REDEFINES\s+(?<original>[\w\-]+).*|.match(s)
         [to_field_name(line_match[:name]), { redefines: to_field_name(line_match[:original]) }]
       end
     rescue
+      # TODO Raise ParserException
       nil
+    end
+
+    def parse(s)
+      s.split("\n").reject { |line| line =~ /^\*/ }.join("").gsub(/[\r\n]/, '').split('.').map { |l| parse_line(l) }.compact
     end
 
     private
