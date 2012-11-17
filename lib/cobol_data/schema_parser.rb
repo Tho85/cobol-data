@@ -34,12 +34,12 @@ class CobolData::SchemaParser
           end
         end
 
-        [to_field_name(line_match[:name]), format]
+        { to_field_name(line_match[:name]) => format }
 
       # Check for redefines
       # TODO: DRY name part of regex (see above)
       elsif line_match = %r|(?<name>[\w\-]+)\s+REDEFINES\s+(?<original>[\w\-]+).*|.match(s)
-        [to_field_name(line_match[:name]), { redefines: to_field_name(line_match[:original]) }]
+        { to_field_name(line_match[:name]) => { redefines: to_field_name(line_match[:original]) } }
       end
     rescue
       # TODO Raise ParserException
@@ -47,7 +47,11 @@ class CobolData::SchemaParser
     end
 
     def parse(s)
-      s.split("\n").reject { |line| line =~ /^\*/ }.join("").gsub(/[\r\n]/, '').split('.').map { |l| parse_line(l) }.compact
+      s.split("\n").reject { |line| line =~ /^\*/ }.join("").gsub(/[\r\n]/, '').split('.').compact.inject({}) do |hash, line|
+        line_format = parse_line(line)
+        hash.merge! line_format if line_format
+        hash
+      end
     end
 
     private
