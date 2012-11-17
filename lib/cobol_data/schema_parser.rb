@@ -9,15 +9,15 @@ class CobolData::SchemaParser
         format_expanded = line_match[:format].gsub(/([X9])\((\d+)\)/) { $1 * $2.to_i }
 
         # Check for general string or number format
-        format = if format_match = %r|^(?<sign>[S]?)(?<type>[X9]+)(?<precision>.*)|.match(format_expanded)
+        format = if format_match = %r|^(?<sign>[S]?)(?<type>[X9]+)(?<scale>.*)|.match(format_expanded)
           { type: TYPES[format_match[:type][0]], length: format_match[:type].length }
         end
 
-        # Is a precision given?
-        if format_match[:precision]
+        # Is a scale given?
+        if format_match[:scale]
           # Check for decimals, e.g. 9(4)V99
-          if precision_match = %r|^V(?<precision>\d+)|.match(format_match[:precision])
-            format.merge! precision: format.delete(:length), scale: precision_match[:precision].length
+          if scale_match = %r|^V(?<scale>\d+)|.match(format_match[:scale])
+            format.merge! scale: scale_match[:scale].length
           end
         end
 

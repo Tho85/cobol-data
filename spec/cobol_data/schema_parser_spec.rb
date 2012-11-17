@@ -12,7 +12,7 @@ describe CobolData::SchemaParser do
       end
 
       it 'parses decimals' do
-        "04 DEC2 PIC 999V99".should parse_line_to [:dec2, { type: :number, precision: 3, scale: 2 }]
+        "04 DEC2 PIC 999V99".should parse_line_to [:dec2, { type: :number, length: 3, scale: 2 }]
       end
 
     end
@@ -27,13 +27,13 @@ describe CobolData::SchemaParser do
       end
 
       it 'works for decimals' do
-        "04 DEC PIC 9(4)V99".should parse_line_to [:dec, { type: :number, precision: 4, scale: 2 }]
+        "04 DEC PIC 9(4)V99".should parse_line_to [:dec, { type: :number, length: 4, scale: 2 }]
       end
 
     end
     context 'modifiers' do
       it 'parses packed decimals' do
-        "04 COMP PIC 9(5)V9  COMP-3".should parse_line_to [:comp, { type: :number, precision: 5, scale: 1, packed: true }]
+        "04 COMP PIC 9(5)V9  COMP-3".should parse_line_to [:comp, { type: :number, length: 5, scale: 1, packed: true }]
       end
 
       it 'parses signs' do
