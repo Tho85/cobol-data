@@ -1,4 +1,4 @@
-class CobolData::Parser
+class CobolData::SchemaParser
   class << self
     TYPES = { 'X' => :text, '9' => :number }
 

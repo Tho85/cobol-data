@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CobolData::Parser do
+describe CobolData::SchemaParser do
   context 'standard format' do
     it 'parses strings' do
       "05 NAMEALT PIC XXX.".should be_parsed_as [:namealt, { type: :text, length: 3 }]

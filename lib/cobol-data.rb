@@ -1,5 +1,5 @@
 require "cobol_data/version"
 
 module CobolData
-  autoload :Parser, 'cobol_data/parser'
+  autoload :SchemaParser, 'cobol_data/schema_parser'
 end
