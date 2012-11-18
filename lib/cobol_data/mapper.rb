@@ -1,11 +1,11 @@
 require 'bigdecimal'
 
-class CobolData::DataParser
+class CobolData::Mapper
   def initialize(schema)
     @schema = schema
   end
 
-  def parse_line(line)
+  def read(line)
     # First convert schema to string unpack schema
     raw_hash = Hash[prepared_schema.keys.zip(line.unpack(schema_to_unpack_argument))]
 
