@@ -32,6 +32,30 @@ class CobolData::Mapper
     end
   end
 
+  def write(data)
+    # Go through every field in the schema
+    prepared_schema.inject("") do |line, (field_name, field_format)|
+      length = field_format[:length]
+
+      # Convert value to a string
+      append = case field_format[:type]
+              when :text
+                "%-#{length}s" % data[field_name]
+              when :number
+                if field_format[:scale]
+                  "%0#{length}d" % (data[field_name] * (10 ** field_format[:scale]))
+                else
+                  "%0#{length}d" % data[field_name]
+                end
+              end
+
+      # Raise error if field is too long
+      raise CobolData::Error::ArgumentError if append.length > length
+
+      line += append
+    end
+  end
+
   private
   def schema_to_unpack_argument
     prepared_schema.values.map do |field_format|

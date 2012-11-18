@@ -13,6 +13,14 @@ describe CobolData::Mapper do
     it 'reads data to hashes' do
       mapper.read("015THOMAS    0180").should == { id: 15, name: "THOMAS    ", height: 1.8 }
     end
+
+    it 'writes hashes to data' do
+      mapper.write(id: 15, name: "THOMAS", height: 1.8).should == "015THOMAS    0180"
+    end
+
+    it 'raises exceptions if data doesnt fit' do
+      expect { mapper.write(id: 15, name: "THOMAS HOLLSTEGGE", height: 1.8) }.to raise_error(CobolData::Error::ArgumentError)
+    end
   end
 
   context 'with redefines' do
@@ -29,6 +37,10 @@ describe CobolData::Mapper do
 
     it 'redefines correctly' do
       mapper.read("1234VORNAME   NACHNAME  42").should == { id: 1234, first_name: 'VORNAME   ', last_name: 'NACHNAME  ', number: 42 }
+    end
+
+    it 'writes data correctly' do
+      mapper.write(id: 1234, first_name: 'VORNAME   ', last_name: 'NACHNAME  ', number: 42).should == "1234VORNAME   NACHNAME  42"
     end
 
   end
