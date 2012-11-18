@@ -15,7 +15,11 @@ describe CobolData::Mapper do
     end
 
     it 'writes hashes to data' do
-      mapper.write(id: 15, name: "THOMAS", height: 1.8).should == "015THOMAS    0180"
+      mapper.write(id: 15, name: "THOMAS", height: 1.8).should == "015THOMAS    0180\n"
+    end
+
+    it 'converts nil correctly' do
+      mapper.write({}).should == "000          0000\n"
     end
 
     it 'raises exceptions if data doesnt fit' do
@@ -40,7 +44,7 @@ describe CobolData::Mapper do
     end
 
     it 'writes data correctly' do
-      mapper.write(id: 1234, first_name: 'VORNAME   ', last_name: 'NACHNAME  ', number: 42).should == "1234VORNAME   NACHNAME  42"
+      mapper.write(id: 1234, first_name: 'VORNAME   ', last_name: 'NACHNAME  ', number: 42).should == "1234VORNAME   NACHNAME  42\n"
     end
 
   end

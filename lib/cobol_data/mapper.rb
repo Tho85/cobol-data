@@ -34,7 +34,7 @@ class CobolData::Mapper
 
   def write(data)
     # Go through every field in the schema
-    prepared_schema.inject("") do |line, (field_name, field_format)|
+    line = prepared_schema.inject("") do |line, (field_name, field_format)|
       length = field_format[:length]
 
       # Convert value to a string
@@ -43,9 +43,9 @@ class CobolData::Mapper
                 "%-#{length}s" % data[field_name]
               when :number
                 if field_format[:scale]
-                  "%0#{length}d" % (data[field_name] * (10 ** field_format[:scale]))
+                  "%0#{length}d" % ((data[field_name] || 0) * (10 ** field_format[:scale]))
                 else
-                  "%0#{length}d" % data[field_name]
+                  "%0#{length}d" % data[field_name].to_i
                 end
               end
 
@@ -54,6 +54,8 @@ class CobolData::Mapper
 
       line += append
     end
+
+    line + "\n"
   end
 
   private
